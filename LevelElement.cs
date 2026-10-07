@@ -21,6 +21,9 @@ namespace Labb02
 
         public void Draw()
         {
+            Console.SetCursorPosition(X, Y);
+            Console.ForegroundColor = ColorOfSymbol;
+            Console.Write(Symbol);
         }
     }
 
@@ -69,6 +72,20 @@ namespace Labb02
         }
         public override void Update()
         {
+        }
+    }
+
+    class Player : Enemy
+    {
+        public Player(int x, int y) : base (x, y, "Player", 100, ConsoleColor.White, '@')
+        {
+            AttackDice = new Dice(2, 6, 2);
+            DefenseDice = new Dice(2, 6, 0);
+        }
+
+        public override void Update()
+        {
+
         }
     }
 
