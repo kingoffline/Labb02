@@ -2,6 +2,7 @@
 
 LevelData levelData = new LevelData();
 levelData.Load(@"C:\Users\arhai\source\repos\Labb02\Level1.txt");
+Console.CursorVisible = false;
 levelData.DrawMap();
 bool running = true;
 while (running)

@@ -67,33 +67,44 @@ namespace Labb02
         public void PlayerMovement(ConsoleKey key)
         {
             var player = _elements.OfType<Player>().FirstOrDefault();
-            int x = player.X;
-            int y = player.Y;
+
+            int targetX = player.X;
+            int targetY = player.Y;
+
             switch (key)
             {
-
                 case ConsoleKey.UpArrow:
-                    Console.SetCursorPosition(x, y);
-                    Console.Write(' ');
-                    player.Y--;
-                    break;
-                case ConsoleKey.DownArrow:
-                    Console.SetCursorPosition(x, y);
-                    Console.Write(' ');
-                    player.Y++;
-                    break;
-                case ConsoleKey.LeftArrow:
-                    Console.SetCursorPosition(x, y);
-                    Console.Write(' ');
-                    player.X--;
-                    break;
-                case ConsoleKey.RightArrow:
-                    Console.SetCursorPosition(x, y);
-                    Console.Write(' ');
-                    player.X++;
+                    targetY--;
                     break;
 
+                case ConsoleKey.DownArrow:
+                    targetY++;
+                    break;
+
+                case ConsoleKey.LeftArrow:
+                    targetX--;
+                    break;
+
+                case ConsoleKey.RightArrow:
+                    targetX++;
+                    break;
+
+                default:
+                    return;
             }
+
+            var wall = _elements
+                .OfType<Wall>()
+                .Any(w => w.X == targetX && w.Y == targetY);
+
+            if (wall)
+                return;
+
+            Console.SetCursorPosition(player.X, player.Y);
+            Console.Write(' ');
+
+            player.X = targetX;
+            player.Y = targetY;
         }
 
     }
