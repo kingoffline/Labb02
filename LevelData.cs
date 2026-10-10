@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Labb02
 {
@@ -32,26 +33,27 @@ namespace Labb02
                     switch (c)
                     {
                         case '#':
-                            _elements.Add(new Wall(x,y));
+                            _elements.Add(new Wall(x, y));
                             x++;
                             break;
                         case 'r':
-                            _elements.Add(new Rat(x,y));
+                            _elements.Add(new Rat(x, y));
                             x++;
                             break;
                         case 's':
-                            _elements.Add(new Snake(x,y));
+                            _elements.Add(new Snake(x, y));
                             x++;
                             break;
                         case '@':
-                            _elements.Add(new Player(x,y));
+                            _elements.Add(new Player(x, y));
                             x++;
                             break;
                         case ' ':
                             x++;
                             break;
+                        default : break;
                     }
-                    
+
                 }
             }
         }
@@ -60,51 +62,25 @@ namespace Labb02
         {
             foreach (LevelElement element in _elements)
             {
-                    element.Draw();
+                element.Draw();
             }
         }
 
-        public void PlayerMovement(ConsoleKey key)
+        public void Move(ConsoleKey key)
         {
             var player = _elements.OfType<Player>().FirstOrDefault();
+            var allEnemies = _elements.OfType<Enemy>();
 
-            int targetX = player.X;
-            int targetY = player.Y;
+            if (player == null) return;
 
-            switch (key)
+            player.Update(key, _elements);
+            player.Draw();
+
+            foreach (var enemy in allEnemies)
             {
-                case ConsoleKey.UpArrow:
-                    targetY--;
-                    break;
-
-                case ConsoleKey.DownArrow:
-                    targetY++;
-                    break;
-
-                case ConsoleKey.LeftArrow:
-                    targetX--;
-                    break;
-
-                case ConsoleKey.RightArrow:
-                    targetX++;
-                    break;
-
-                default:
-                    return;
+                enemy.Update(player, _elements);
+                enemy.Draw();
             }
-
-            var wall = _elements
-                .OfType<Wall>()
-                .Any(w => w.X == targetX && w.Y == targetY);
-
-            if (wall)
-                return;
-
-            Console.SetCursorPosition(player.X, player.Y);
-            Console.Write(' ');
-
-            player.X = targetX;
-            player.Y = targetY;
         }
 
     }

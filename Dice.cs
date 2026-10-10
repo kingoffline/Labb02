@@ -20,7 +20,7 @@ namespace Labb02
         {
             int total = 0;
             Random random = new Random();
-            for(int i = 0; i < NumberOfDices; i++)
+            for (int i = 0; i < NumberOfDices; i++)
             {
                 total += random.Next(1, Sides + 1);
             }
