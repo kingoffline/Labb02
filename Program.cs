@@ -7,8 +7,6 @@ levelData.DrawMap();
 bool running = true;
 while (running)
 {
-    while (running)
-    {
         ConsoleKey inputKey = Console.ReadKey().Key;
 
         if (inputKey == ConsoleKey.Escape)
@@ -24,5 +22,4 @@ while (running)
         {
             levelData.Move(inputKey);
         }
-    }
 }

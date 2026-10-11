@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using System.Xml.Linq;
 
@@ -60,9 +61,9 @@ namespace Labb02
 
         public void DrawMap()
         {
-            foreach (LevelElement element in _elements)
+            foreach (var element in _elements)
             {
-                element.Draw();
+                  element.Draw(_elements);
             }
         }
 
@@ -70,17 +71,16 @@ namespace Labb02
         {
             var player = _elements.OfType<Player>().FirstOrDefault();
             var allEnemies = _elements.OfType<Enemy>();
+            var walls = _elements.OfType<LevelElement>();
 
-            if (player == null) return;
-
-            player.Update(key, _elements);
-            player.Draw();
+            player?.Update(key, _elements);
 
             foreach (var enemy in allEnemies)
             {
                 enemy.Update(player, _elements);
-                enemy.Draw();
             }
+
+            DrawMap();
         }
 
     }

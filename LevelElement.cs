@@ -12,6 +12,7 @@ namespace Labb02
         public int Y { get; set; }
         public char Symbol { get; set; }
         public ConsoleColor ColorOfSymbol { get; set; }
+        public bool isDiscovered { get; set; } = false;
 
         public LevelElement(int x, int y, char symbol, ConsoleColor colorOfSymbol)
         {
@@ -21,11 +22,31 @@ namespace Labb02
             ColorOfSymbol = colorOfSymbol;
         }
 
-        public void Draw()
+        public void Draw(List<LevelElement> levelElements)
         {
-            Console.SetCursorPosition(X, Y);
-            Console.ForegroundColor = ColorOfSymbol;
-            Console.Write(Symbol);
+            var player = levelElements.OfType<Player>().FirstOrDefault();
+            int distanceOnXAxel = X - player.X;
+            int distanceOnYAxel = Y - player.Y;
+            int radialDistance = (int)Math.Sqrt(distanceOnXAxel * distanceOnXAxel + distanceOnYAxel * distanceOnYAxel);
+
+            if (radialDistance < 5)
+            {
+                isDiscovered = true;
+                Console.SetCursorPosition(X, Y);
+                Console.ForegroundColor = ColorOfSymbol;
+                Console.Write(Symbol);
+            }
+            else if (Symbol == '#' && isDiscovered)
+            {
+                Console.SetCursorPosition(X, Y);
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write(Symbol);
+            }
+            else
+            {
+                Console.SetCursorPosition(X, Y);
+                Console.Write(' ');
+            }
         }
     }
 
@@ -48,7 +69,7 @@ namespace Labb02
             HP = hp;
         }
 
-        public abstract void Update(Player player, List<LevelElement> elements);
+        public abstract void Update(Player? player, List<LevelElement> elements);
     }
 
     class Rat : Enemy
@@ -59,7 +80,7 @@ namespace Labb02
             AttackDice = new Dice(1, 6, 3);
             DefenseDice = new Dice(1, 6, 1);
         }
-        public override void Update(Player player, List<LevelElement> elements)
+        public override void Update(Player? player, List<LevelElement> elements)
         {
             int randomMove = rn.Next(1, 5);
             int targetX = X;
@@ -93,7 +114,7 @@ namespace Labb02
             AttackDice = new Dice(3, 4, 2);
             DefenseDice = new Dice(1, 8, 5);
         }
-        public override void Update(Player player, List<LevelElement> elements)
+        public override void Update(Player? player, List<LevelElement> elements)
         {
 
             int distanceOnXAxel = X - player.X;
@@ -157,13 +178,17 @@ namespace Labb02
 
             switch (key)
             {
-                case ConsoleKey.UpArrow: targetY = Y - 1;
+                case ConsoleKey.UpArrow:
+                    targetY = Y - 1;
                     break;
-                case ConsoleKey.DownArrow: targetY = Y + 1;
+                case ConsoleKey.DownArrow:
+                    targetY = Y + 1;
                     break;
-                case ConsoleKey.LeftArrow: targetX = X - 1;
+                case ConsoleKey.LeftArrow:
+                    targetX = X - 1;
                     break;
-                case ConsoleKey.RightArrow: targetX = X + 1;
+                case ConsoleKey.RightArrow:
+                    targetX = X + 1;
                     break;
                 default: return;
             }
