@@ -12,6 +12,7 @@ namespace Labb02
         public int Y { get; set; }
         public char Symbol { get; set; }
         public ConsoleColor ColorOfSymbol { get; set; }
+        public bool isDiscovered { get; set; } = false;
 
         public LevelElement(int x, int y, char symbol, ConsoleColor colorOfSymbol)
         {
@@ -19,6 +20,8 @@ namespace Labb02
             Y = y;
             Symbol = symbol;
             ColorOfSymbol = colorOfSymbol;
+            isDiscovered = false;
+
         }
 
         public void Draw()

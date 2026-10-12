@@ -9,7 +9,6 @@ namespace Labb02
     internal class LevelData
     {
         private List<LevelElement> _elements = new List<LevelElement>();
-        public bool isDiscovered { get; set; } = false;
         public List<LevelElement> Elements
         {
             get { return _elements; }
@@ -71,12 +70,14 @@ namespace Labb02
 
                 if (radialDistance < 5)
                 {
-                    isDiscovered = true;
                     element.Draw();
-                } else if (element.Symbol == '#' && isDiscovered)
+                    element.isDiscovered = true;
+                }
+                else if (element is Wall && element.isDiscovered)
                 {
                     Console.SetCursorPosition(element.X, element.Y);
                     Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write(element.Symbol);
                 } else
                 {
                     Console.SetCursorPosition(element.X, element.Y);
