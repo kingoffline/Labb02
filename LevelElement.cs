@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
 using System.Linq;
+using System.Numerics;
 
 namespace Labb02
 {
@@ -26,9 +27,9 @@ namespace Labb02
 
         public void Draw()
         {
-                Console.SetCursorPosition(X, Y);
-                Console.ForegroundColor = ColorOfSymbol;
-                Console.Write(Symbol);
+            Console.SetCursorPosition(X, Y);
+            Console.ForegroundColor = ColorOfSymbol;
+            Console.Write(Symbol);
         }
     }
 
@@ -85,7 +86,17 @@ namespace Labb02
 
                 X = targetX;
                 Y = targetY;
+            } if (targetX == player.X && targetY == player.Y)
+            {
+                int result = AttackDice.Throw() - player.DefenseDice.Throw();
+                HP -= result;
+                if (result > 0)
+                {
+                    player.HP -= result;
+                    Console.WriteLine($"{Name}: HP = {HP}, Attack = {AttackDice.ToString()}, Defence = {player.DefenseDice.ToString()}");
+                }
             }
+
         }
     }
 
@@ -176,7 +187,7 @@ namespace Labb02
             }
 
             bool isBlocked = elements.Any(e => e != this && e.X == targetX && e.Y == targetY);
-
+            var enemy = elements.OfType<Enemy>().FirstOrDefault(e => e.X == targetX && e.Y == targetY);
             if (!isBlocked)
             {
                 Console.SetCursorPosition(X, Y);
@@ -184,7 +195,15 @@ namespace Labb02
 
                 X = targetX;
                 Y = targetY;
+            } else if (enemy is Rat)
+            {
+                int result = AttackDice.Throw() - enemy.DefenseDice.Throw();
+                if (result > 0)
+                {
+                    enemy.HP -= result;
+                }
             }
+            
         }
 
     }
