@@ -9,7 +9,7 @@ namespace Labb02
     internal class LevelData
     {
         private List<LevelElement> _elements = new List<LevelElement>();
-
+        public bool isDiscovered { get; set; } = false;
         public List<LevelElement> Elements
         {
             get { return _elements; }
@@ -61,9 +61,27 @@ namespace Labb02
 
         public void DrawMap()
         {
+            var player = _elements.OfType<Player>().FirstOrDefault();
+
             foreach (var element in _elements)
             {
-                  element.Draw(_elements);
+                int distanceOnXAxel = element.X - player.X;
+                int distanceOnYAxel = element.Y - player.Y;
+                int radialDistance = (int)Math.Sqrt(distanceOnXAxel * distanceOnXAxel + distanceOnYAxel * distanceOnYAxel);
+
+                if (radialDistance < 5)
+                {
+                    isDiscovered = true;
+                    element.Draw();
+                } else if (element.Symbol == '#' && isDiscovered)
+                {
+                    Console.SetCursorPosition(element.X, element.Y);
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                } else
+                {
+                    Console.SetCursorPosition(element.X, element.Y);
+                    Console.Write(' ');
+                }
             }
         }
 
@@ -71,7 +89,6 @@ namespace Labb02
         {
             var player = _elements.OfType<Player>().FirstOrDefault();
             var allEnemies = _elements.OfType<Enemy>();
-            var walls = _elements.OfType<LevelElement>();
 
             player?.Update(key, _elements);
 

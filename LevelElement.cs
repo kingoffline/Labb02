@@ -12,7 +12,6 @@ namespace Labb02
         public int Y { get; set; }
         public char Symbol { get; set; }
         public ConsoleColor ColorOfSymbol { get; set; }
-        public bool isDiscovered { get; set; } = false;
 
         public LevelElement(int x, int y, char symbol, ConsoleColor colorOfSymbol)
         {
@@ -22,31 +21,11 @@ namespace Labb02
             ColorOfSymbol = colorOfSymbol;
         }
 
-        public void Draw(List<LevelElement> levelElements)
+        public void Draw()
         {
-            var player = levelElements.OfType<Player>().FirstOrDefault();
-            int distanceOnXAxel = X - player.X;
-            int distanceOnYAxel = Y - player.Y;
-            int radialDistance = (int)Math.Sqrt(distanceOnXAxel * distanceOnXAxel + distanceOnYAxel * distanceOnYAxel);
-
-            if (radialDistance < 5)
-            {
-                isDiscovered = true;
                 Console.SetCursorPosition(X, Y);
                 Console.ForegroundColor = ColorOfSymbol;
                 Console.Write(Symbol);
-            }
-            else if (Symbol == '#' && isDiscovered)
-            {
-                Console.SetCursorPosition(X, Y);
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write(Symbol);
-            }
-            else
-            {
-                Console.SetCursorPosition(X, Y);
-                Console.Write(' ');
-            }
         }
     }
 
