@@ -46,6 +46,7 @@ namespace Labb02
         public int HP { get; set; }
         public Dice AttackDice { get; set; }
         public Dice DefenseDice { get; set; }
+        public Combat Combat { get; set; }
         public Enemy(int x, int y, string name, int hp, ConsoleColor color, char symbol) : base(x, y, symbol, color)
         {
             Name = name;
@@ -53,6 +54,7 @@ namespace Labb02
         }
 
         public abstract void Update(Player? player, List<LevelElement> elements);
+
     }
 
     class Rat : Enemy
@@ -62,6 +64,7 @@ namespace Labb02
         {
             AttackDice = new Dice(1, 6, 3);
             DefenseDice = new Dice(1, 6, 1);
+            Combat = new Combat();
         }
         public override void Update(Player? player, List<LevelElement> elements)
         {
@@ -86,14 +89,12 @@ namespace Labb02
 
                 X = targetX;
                 Y = targetY;
-            } if (targetX == player.X && targetY == player.Y)
+            }
+            if (targetX == player.X && targetY == player.Y)
             {
-                int result = AttackDice.Throw() - player.DefenseDice.Throw();
-                HP -= result;
-                if (result > 0)
+                if (HP > 0)
                 {
-                    player.HP -= result;
-                    Console.WriteLine($"{Name}: HP = {HP}, Attack = {AttackDice.ToString()}, Defence = {player.DefenseDice.ToString()}");
+                    Combat.EnemyCombat(player, this);
                 }
             }
 
@@ -155,6 +156,7 @@ namespace Labb02
         public int HP { get; set; }
         public Dice AttackDice { get; set; }
         public Dice DefenseDice { get; set; }
+        public Combat Combat { get; set; }
 
         public Player(int x, int y) : base(x, y, '@', ConsoleColor.White)
         {
@@ -162,6 +164,7 @@ namespace Labb02
             HP = 100;
             AttackDice = new Dice(2, 6, 2);
             DefenseDice = new Dice(2, 6, 0);
+            Combat = new Combat();
         }
 
         public void Update(ConsoleKey key, List<LevelElement> elements)
@@ -195,17 +198,16 @@ namespace Labb02
 
                 X = targetX;
                 Y = targetY;
-            } else if (enemy is Rat)
+            }
+            if (enemy != null)
             {
-                int result = AttackDice.Throw() - enemy.DefenseDice.Throw();
-                if (result > 0)
+                if (HP > 0)
+                    Combat.PlayerCombat(this, enemy);
+                if (enemy.HP < 1)
                 {
-                    enemy.HP -= result;
+                    elements.Remove(enemy);
                 }
             }
-            
         }
-
     }
-
 }

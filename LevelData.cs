@@ -19,7 +19,7 @@ namespace Labb02
             using (StreamReader sr = new StreamReader(fileName))
             {
                 int x = 0;
-                int y = 0;
+                int y = 2;
 
                 for (int i = sr.Read(); i != -1; i = sr.Read())
                 {
@@ -89,15 +89,18 @@ namespace Labb02
         public void Move(ConsoleKey key)
         {
             var player = _elements.OfType<Player>().FirstOrDefault();
-            var allEnemies = _elements.OfType<Enemy>();
+            var allEnemies = _elements.OfType<Enemy>().ToList();
 
             player?.Update(key, _elements);
-
-            foreach (var enemy in allEnemies)
+            
+            if (player is not null)
             {
-                enemy.Update(player, _elements);
+                foreach (var enemy in allEnemies)
+                {
+                    enemy.Update(player, _elements);
+                }
             }
-
+            
             DrawMap();
         }
 
