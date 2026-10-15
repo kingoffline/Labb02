@@ -2,6 +2,7 @@
 
 LevelData levelData = new LevelData();
 levelData.Load(@"C:\Users\arhai\source\repos\Labb02\Level1.txt");
+var player = levelData.Elements.OfType<Player>().FirstOrDefault();
 Console.CursorVisible = false;
 levelData.DrawMap();
 bool running = true;
@@ -21,5 +22,14 @@ while (running)
             inputKey == ConsoleKey.RightArrow)
         {
             levelData.Move(inputKey);
+            if (player is not null && player.HP <= 0)
+            {
+                Console.Clear();
+                Console.SetCursorPosition(0, 0);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("GAME OVER");
+                Console.ResetColor();
+                running = false;
+            }
         }
 }

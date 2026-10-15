@@ -61,14 +61,16 @@ namespace Labb02
         public void DrawMap()
         {
             var player = _elements.OfType<Player>().FirstOrDefault();
+            if (player is null)
+                return;
 
             foreach (var element in _elements)
             {
-                int distanceOnXAxel = element.X - player.X;
-                int distanceOnYAxel = element.Y - player.Y;
-                int radialDistance = (int)Math.Sqrt(distanceOnXAxel * distanceOnXAxel + distanceOnYAxel * distanceOnYAxel);
+                int dx = element.X - player.X;
+                int dy = element.Y - player.Y;
+                int distanceSquared = dx * dx + dy * dy;
 
-                if (radialDistance < 5)
+                if (distanceSquared <= 25)
                 {
                     element.Draw();
                     element.isDiscovered = true;
@@ -89,19 +91,41 @@ namespace Labb02
         public void Move(ConsoleKey key)
         {
             var player = _elements.OfType<Player>().FirstOrDefault();
-            var allEnemies = _elements.OfType<Enemy>().ToList();
 
-            player?.Update(key, _elements);
-            
-            if (player is not null)
+            if (player is null || player.HP <= 0)
+                return;
+
+            player.Update(key, _elements);
+
+            Enemy? engagedEnemy = player.EngagedEnemyThisTurn;
+
+            if (engagedEnemy is not null && engagedEnemy.HP <= 0)
+                RemoveEnemy(engagedEnemy);
+
+            var enemies = _elements.OfType<Enemy>().ToList();
+
+            foreach (var enemy in enemies)
             {
-                foreach (var enemy in allEnemies)
-                {
-                    enemy.Update(player, _elements);
-                }
+                if (player.HP <= 0)
+                    break;
+
+                if (enemy.HP <= 0 || enemy == engagedEnemy || !_elements.Contains(enemy))
+                    continue;
+
+                enemy.Update(player, _elements);
+
+                if (enemy.HP <= 0)
+                    RemoveEnemy(enemy);
             }
-            
+
             DrawMap();
+        }
+
+        private void RemoveEnemy(Enemy enemy)
+        {
+            Console.SetCursorPosition(enemy.X, enemy.Y);
+            Console.Write(' ');
+            _elements.Remove(enemy);
         }
 
     }

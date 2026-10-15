@@ -33,13 +33,6 @@ namespace Labb02
         }
     }
 
-    class Wall : LevelElement
-    {
-        public Wall(int x, int y) : base(x, y, '#', ConsoleColor.Gray)
-        {
-        }
-    }
-
     abstract class Enemy : LevelElement
     {
         public string Name { get; set; }
@@ -51,163 +44,10 @@ namespace Labb02
         {
             Name = name;
             HP = hp;
+            Combat = new Combat();
         }
 
         public abstract void Update(Player? player, List<LevelElement> elements);
 
-    }
-
-    class Rat : Enemy
-    {
-        private static readonly Random rn = new Random();
-        public Rat(int x, int y) : base(x, y, "Rat", 10, ConsoleColor.Red, 'r')
-        {
-            AttackDice = new Dice(1, 6, 3);
-            DefenseDice = new Dice(1, 6, 1);
-            Combat = new Combat();
-        }
-        public override void Update(Player? player, List<LevelElement> elements)
-        {
-            int randomMove = rn.Next(1, 5);
-            int targetX = X;
-            int targetY = Y;
-
-            switch (randomMove)
-            {
-                case 1: targetY--; break;
-                case 2: targetY++; break;
-                case 3: targetX++; break;
-                case 4: targetX--; break;
-            }
-
-            bool isBlocked = elements.Any(e => e.X == targetX && e.Y == targetY);
-
-            if (!isBlocked)
-            {
-                Console.SetCursorPosition(X, Y);
-                Console.Write(' ');
-
-                X = targetX;
-                Y = targetY;
-            }
-            if (targetX == player.X && targetY == player.Y)
-            {
-                if (HP > 0)
-                {
-                    Combat.EnemyCombat(player, this);
-                }
-            }
-
-        }
-    }
-
-    class Snake : Enemy
-    {
-        public Snake(int x, int y) : base(x, y, "Snake", 25, ConsoleColor.Green, 's')
-        {
-            AttackDice = new Dice(3, 4, 2);
-            DefenseDice = new Dice(1, 8, 5);
-        }
-        public override void Update(Player? player, List<LevelElement> elements)
-        {
-
-            int distanceOnXAxel = X - player.X;
-            int distanceOnYAxel = Y - player.Y;
-            int radialDistance = (int)Math.Sqrt(distanceOnXAxel * distanceOnXAxel + distanceOnYAxel * distanceOnYAxel);
-
-            if (radialDistance > 2) return;
-
-            int targetX = X;
-            int targetY = Y;
-
-            if (Math.Abs(distanceOnXAxel) >= Math.Abs(distanceOnYAxel))
-            {
-                if (distanceOnXAxel > 0)
-                {
-                    targetX++;
-                }
-                else targetX--;
-            }
-            else
-            {
-                if (distanceOnYAxel > 0)
-                {
-                    targetY++;
-                }
-                else targetY--;
-            }
-
-            bool isBlocked = elements.Any(e => e.X == targetX && e.Y == targetY);
-
-            if (!isBlocked)
-            {
-                Console.SetCursorPosition(X, Y);
-                Console.Write(' ');
-
-                X = targetX;
-                Y = targetY;
-            }
-        }
-    }
-
-    class Player : LevelElement
-    {
-        public string Name { get; set; }
-        public int HP { get; set; }
-        public Dice AttackDice { get; set; }
-        public Dice DefenseDice { get; set; }
-        public Combat Combat { get; set; }
-
-        public Player(int x, int y) : base(x, y, '@', ConsoleColor.White)
-        {
-            Name = "Player";
-            HP = 100;
-            AttackDice = new Dice(2, 6, 2);
-            DefenseDice = new Dice(2, 6, 0);
-            Combat = new Combat();
-        }
-
-        public void Update(ConsoleKey key, List<LevelElement> elements)
-        {
-            int targetX = X;
-            int targetY = Y;
-
-            switch (key)
-            {
-                case ConsoleKey.UpArrow:
-                    targetY = Y - 1;
-                    break;
-                case ConsoleKey.DownArrow:
-                    targetY = Y + 1;
-                    break;
-                case ConsoleKey.LeftArrow:
-                    targetX = X - 1;
-                    break;
-                case ConsoleKey.RightArrow:
-                    targetX = X + 1;
-                    break;
-                default: return;
-            }
-
-            bool isBlocked = elements.Any(e => e != this && e.X == targetX && e.Y == targetY);
-            var enemy = elements.OfType<Enemy>().FirstOrDefault(e => e.X == targetX && e.Y == targetY);
-            if (!isBlocked)
-            {
-                Console.SetCursorPosition(X, Y);
-                Console.Write(' ');
-
-                X = targetX;
-                Y = targetY;
-            }
-            if (enemy != null)
-            {
-                if (HP > 0)
-                    Combat.PlayerCombat(this, enemy);
-                if (enemy.HP < 1)
-                {
-                    elements.Remove(enemy);
-                }
-            }
-        }
     }
 }

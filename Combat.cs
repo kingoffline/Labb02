@@ -8,8 +8,15 @@ namespace Labb02
         {
             int damage = RollDamage(enemy.AttackDice, player.DefenseDice);
             player.HP = Math.Max(0, player.HP - damage);
-            Report(enemy.Name, player.Name, damage,
-                   $"{enemy.Name}: {enemy.HP}  {player.Name}: {player.HP}");
+            Report(enemy.Name, player.Name, damage,$"{enemy.Name}: {enemy.HP}  {player.Name}: {player.HP}", 0);
+
+            if (player.HP > 0 && enemy.HP > 0)
+            {
+                damage = RollDamage(player.AttackDice, enemy.DefenseDice);
+                enemy.HP = Math.Max(0, enemy.HP - damage);
+                Report(player.Name, enemy.Name, damage,
+                    $"{player.Name}: {player.HP}  {enemy.Name}: {enemy.HP}", 1);
+            }
         }
 
         public void PlayerCombat(Player player, Enemy enemy)
@@ -17,7 +24,15 @@ namespace Labb02
             int damage = RollDamage(player.AttackDice, enemy.DefenseDice);
             enemy.HP = Math.Max(0, enemy.HP - damage);
             Report(player.Name, enemy.Name, damage,
-                   $"{player.Name}: {player.HP}  {enemy.Name}: {enemy.HP}");
+                $"{player.Name}: {player.HP}  {enemy.Name}: {enemy.HP}", 0);
+
+            if (enemy.HP > 0 && player.HP > 0)
+            {
+                damage = RollDamage(enemy.AttackDice, player.DefenseDice);
+                player.HP = Math.Max(0, player.HP - damage);
+                Report(enemy.Name, player.Name, damage,
+                    $"{enemy.Name}: {enemy.HP}  {player.Name}: {player.HP}", 1);
+            }
         }
 
         private static int RollDamage(Dice attackDice, Dice defenseDice)
@@ -28,7 +43,7 @@ namespace Labb02
         }
 
         private static void Report(string attacker, string defender,
-                           int damage, string hpStatus)
+                           int damage, string hpStatus, int reportLine)
         {
             string outcome;
 
@@ -41,9 +56,9 @@ namespace Labb02
                 outcome = $"{defender} blocked {attacker}";
             }
 
-            Console.SetCursorPosition(0, 0);
+            Console.SetCursorPosition(0, reportLine);
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"{attacker} Attack => {outcome} ==> {hpStatus}");
+            Console.WriteLine($"{attacker} attacks {defender}: {outcome} ==> {hpStatus}");
         }
     }
 }
