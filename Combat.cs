@@ -8,13 +8,14 @@ namespace Labb02
         {
             int damage = RollDamage(enemy.AttackDice, player.DefenseDice);
             player.HP = Math.Max(0, player.HP - damage);
-            Report(enemy.Name, player.Name, damage,$"{enemy.Name}: {enemy.HP}  {player.Name}: {player.HP}", 0);
+            Report(enemy.Name, player.Name, damage, enemy.AttackDice, player.DefenseDice,
+                $"{enemy.Name}: {enemy.HP}  {player.Name}: {player.HP}", 0);
 
             if (player.HP > 0 && enemy.HP > 0)
             {
                 damage = RollDamage(player.AttackDice, enemy.DefenseDice);
                 enemy.HP = Math.Max(0, enemy.HP - damage);
-                Report(player.Name, enemy.Name, damage,
+                Report(player.Name, enemy.Name, damage, player.AttackDice, enemy.DefenseDice,
                     $"{player.Name}: {player.HP}  {enemy.Name}: {enemy.HP}", 1);
             }
         }
@@ -23,18 +24,19 @@ namespace Labb02
         {
             int damage = RollDamage(player.AttackDice, enemy.DefenseDice);
             enemy.HP = Math.Max(0, enemy.HP - damage);
-            Report(player.Name, enemy.Name, damage,
+            Report(player.Name, enemy.Name, damage, player.AttackDice, enemy.DefenseDice,
                 $"{player.Name}: {player.HP}  {enemy.Name}: {enemy.HP}", 0);
 
             if (enemy.HP > 0 && player.HP > 0)
             {
                 damage = RollDamage(enemy.AttackDice, player.DefenseDice);
                 player.HP = Math.Max(0, player.HP - damage);
-                Report(enemy.Name, player.Name, damage,
+                Report(enemy.Name, player.Name, damage, enemy.AttackDice, player.DefenseDice,
                     $"{enemy.Name}: {enemy.HP}  {player.Name}: {player.HP}", 1);
             }
         }
 
+        // Beräknar skadan utifrån anfalls- och försvarsslaget. Returnerar 0 om anfallsslaget inte är högre än försvarsslaget.
         private static int RollDamage(Dice attackDice, Dice defenseDice)
         {
             int attackRoll = attackDice.Throw();
@@ -42,8 +44,9 @@ namespace Labb02
             return Math.Max(0, attackRoll - defenseRoll);
         }
 
-        private static void Report(string attacker, string defender,
-                           int damage, string hpStatus, int reportLine)
+        // Visar en stridsrapport för användaren. reportLine anger vilken rad rapporten visas på.
+        private static void Report(string attacker, string defender, int damage,
+                           Dice attackDice, Dice defenseDice, string hpStatus, int reportLine)
         {
             string outcome;
 
@@ -58,7 +61,7 @@ namespace Labb02
 
             Console.SetCursorPosition(0, reportLine);
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"{attacker} attacks {defender}: {outcome} ==> {hpStatus}");
+            Console.WriteLine($"{attacker} {attackDice} attacks {defender} {defenseDice} : {outcome} ==> {hpStatus}");
         }
     }
 }

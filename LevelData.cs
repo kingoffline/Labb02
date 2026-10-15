@@ -51,7 +51,7 @@ namespace Labb02
                         case ' ':
                             x++;
                             break;
-                        default : break;
+                        default: break;
                     }
 
                 }
@@ -60,6 +60,7 @@ namespace Labb02
 
         public void DrawMap()
         {
+
             var player = _elements.OfType<Player>().FirstOrDefault();
             if (player is null)
                 return;
@@ -68,19 +69,23 @@ namespace Labb02
             {
                 int dx = element.X - player.X;
                 int dy = element.Y - player.Y;
-                int distanceSquared = dx * dx + dy * dy;
+                int distanceSquared = (int)Math.Sqrt((dx * dx) + (dy * dy));
 
-                if (distanceSquared <= 25)
+                // Rita elementet inom synhåll och markera det som upptäckt.
+                if (distanceSquared <= 4)
                 {
                     element.Draw();
                     element.isDiscovered = true;
                 }
+                // Visa tidigare upptäckta väggar i mörkgrått även utanför synhåll.
                 else if (element is Wall && element.isDiscovered)
                 {
                     Console.SetCursorPosition(element.X, element.Y);
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.Write(element.Symbol);
-                } else
+                }
+                // Rensa positionen när elementet inte ska visas.
+                else
                 {
                     Console.SetCursorPosition(element.X, element.Y);
                     Console.Write(' ');
@@ -99,17 +104,20 @@ namespace Labb02
 
             Enemy? engagedEnemy = player.EngagedEnemyThisTurn;
 
+            // tar bort fiendet, spelaren har stridit mot om det är inte null och HP <= 0
             if (engagedEnemy is not null && engagedEnemy.HP <= 0)
                 RemoveEnemy(engagedEnemy);
 
             var enemies = _elements.OfType<Enemy>().ToList();
 
+            // Går igenom fienderna och anropar deras Update-metod efter att spelarens Update-metod har körts.
             foreach (var enemy in enemies)
             {
                 if (player.HP <= 0)
                     break;
 
-                if (enemy.HP <= 0 || enemy == engagedEnemy || !_elements.Contains(enemy))
+                // // Hoppa över fienden som spelaren redan har stridit mot den här rundan.
+                if (enemy == engagedEnemy)
                     continue;
 
                 enemy.Update(player, _elements);
@@ -118,8 +126,10 @@ namespace Labb02
                     RemoveEnemy(enemy);
             }
 
+            // Ritar upp banan
             DrawMap();
         }
+
 
         private void RemoveEnemy(Enemy enemy)
         {

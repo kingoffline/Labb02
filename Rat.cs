@@ -17,6 +17,7 @@
             int targetX = X;
             int targetY = Y;
 
+            // Ett slumpmässigt tal mellan 1 och 4 väljer i vilken riktning fienden rör sig.
             switch (randomMove)
             {
                 case 1: targetY--; break;

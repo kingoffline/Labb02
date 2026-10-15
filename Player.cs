@@ -53,6 +53,8 @@
                 X = targetX;
                 Y = targetY;
             }
+
+            // EngagedEnemyThisTurn lagrar vilken fiende spelaren har stridit mot den här rundan.
             if (enemy is not null && HP > 0)
             {
                 Combat.PlayerCombat(this, enemy);

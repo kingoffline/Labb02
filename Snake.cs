@@ -14,6 +14,8 @@
 
             int distanceOnXAxel = X - player.X;
             int distanceOnYAxel = Y - player.Y;
+
+            // Avgör avståndet mellan Player och fiendet m.h.a pythagoras sats.
             int radialDistance = (int)Math.Sqrt(distanceOnXAxel * distanceOnXAxel + distanceOnYAxel * distanceOnYAxel);
 
             if (radialDistance > 2) return;
@@ -21,8 +23,11 @@
             int targetX = X;
             int targetY = Y;
 
+
+            // Avgör på vilken axel ska fiendet röra sig, X eller Y.
             if (Math.Abs(distanceOnXAxel) >= Math.Abs(distanceOnYAxel))
             {
+                // Om distanceOnXAxel > 0 befinner sig fienden till höger om spelaren.
                 if (distanceOnXAxel > 0)
                 {
                     targetX++;
@@ -31,6 +36,7 @@
             }
             else
             {
+                // Om distanceOnYAxel > 0 befinner sig fienden nedanför spelaren.
                 if (distanceOnYAxel > 0)
                 {
                     targetY++;
