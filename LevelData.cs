@@ -16,7 +16,8 @@ namespace Labb02
 
         public void Load(string fileName)
         {
-            using (StreamReader sr = new StreamReader(fileName))
+            string levelPath = Path.Combine(AppContext.BaseDirectory, fileName);
+            using (StreamReader sr = new StreamReader(levelPath))
             {
                 int x = 0;
                 int y = 2;
@@ -105,7 +106,7 @@ namespace Labb02
 
             Enemy? engagedEnemy = player.EngagedEnemyThisTurn;
 
-            // tar bort fiendet, spelaren har stridit mot om det är inte null och HP <= 0
+            // tar bort fienden, spelaren har stridit mot om det är inte null och HP <= 0
             if (engagedEnemy is not null && engagedEnemy.HP <= 0)
                 RemoveEnemy(engagedEnemy);
 
@@ -117,7 +118,7 @@ namespace Labb02
                 if (player.HP <= 0)
                     break;
 
-                // // Hoppa över fienden som spelaren redan har stridit mot den här rundan.
+                // Hoppa över fienden som spelaren redan har stridit mot den här rundan.
                 if (enemy == engagedEnemy)
                     continue;
 
@@ -144,6 +145,5 @@ namespace Labb02
             Console.SetCursorPosition(0, y);
             Console.Write(new string(' ', Console.WindowWidth));
         }
-
     }
 }
