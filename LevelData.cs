@@ -60,7 +60,6 @@ namespace Labb02
 
         public void DrawMap()
         {
-
             var player = _elements.OfType<Player>().FirstOrDefault();
             if (player is null)
                 return;
@@ -95,6 +94,8 @@ namespace Labb02
 
         public void Move(ConsoleKey key)
         {
+            ClearCurrentConsoleLine(0);
+            ClearCurrentConsoleLine(1);
             var player = _elements.OfType<Player>().FirstOrDefault();
 
             if (player is null || player.HP <= 0)
@@ -110,7 +111,7 @@ namespace Labb02
 
             var enemies = _elements.OfType<Enemy>().ToList();
 
-            // Går igenom fienderna och anropar deras Update-metod efter att spelarens Update-metod har körts.
+            // Går igenom fienderna och anropar deras Update-method efter att spelarens Update-metod har körts.
             foreach (var enemy in enemies)
             {
                 if (player.HP <= 0)
@@ -136,6 +137,12 @@ namespace Labb02
             Console.SetCursorPosition(enemy.X, enemy.Y);
             Console.Write(' ');
             _elements.Remove(enemy);
+        }
+
+        private void ClearCurrentConsoleLine(int y)
+        {
+            Console.SetCursorPosition(0, y);
+            Console.Write(new string(' ', Console.WindowWidth));
         }
 
     }

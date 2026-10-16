@@ -1,7 +1,7 @@
 ﻿using Labb02;
 
 LevelData levelData = new LevelData();
-levelData.Load(@"C:\Users\arhai\source\repos\Labb02\Level1.txt");
+levelData.Load(@"C:\Users\arhai\source\repos\kingoffline\Labb02\Level1.txt");
 var player = levelData.Elements.OfType<Player>().FirstOrDefault();
 Console.CursorVisible = false;
 levelData.DrawMap();
